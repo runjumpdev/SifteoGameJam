@@ -14,6 +14,12 @@ static Metadata M = Metadata()
 	
 static VideoBuffer vid;
 
+static void playSfx(const AssetAudio& sfx) {
+    static int i=0;
+    AudioChannel(i).play(sfx);
+    i = 1 - i;
+}
+
 //static AssetSlot mainSlot = AssetSlot::allocate().bootstrap(BootstrapAssets);
 
 //static AssetLoader loader;
@@ -29,7 +35,9 @@ void main()
 	
 	vid.bg0rom.text(vec(0,0),text);
 	
-	AudioTracker::play(Music);
+	playSfx (CountSound);
+
+//	AudioTracker::play(CountSound);
 
 	while (1)
         System::paint();
