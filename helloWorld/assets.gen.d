@@ -1,55 +1,55 @@
 assets.gen.o: assets.gen.cpp \
-  C:\projects\sifteosdk\/include\sifteo/asset.h \
-  C:\projects\sifteosdk\/include\sifteo/asset/group.h \
-  C:\projects\sifteosdk\/include\sifteo/abi.h \
-  C:\projects\sifteosdk\/include\sifteo/abi/syscall.h \
-  C:\projects\sifteosdk\/include\sifteo/abi/types.h \
-  C:\projects\sifteosdk\/include\sifteo/abi/audio.h \
-  C:\projects\sifteosdk\/include\sifteo/abi/events.h \
-  C:\projects\sifteosdk\/include\sifteo/abi/vram.h \
-  C:\projects\sifteosdk\/include\sifteo/abi/asset.h \
-  C:\projects\sifteosdk\/include\sifteo/abi/elf.h \
-  C:\projects\sifteosdk\/include\sifteo/limits.h \
-  C:\projects\sifteosdk\/include\sifteo/macros.h \
-  C:\projects\sifteosdk\/include\sifteo/math.h \
-  C:\projects\sifteosdk\/include\sifteo/asset/loader.h \
-  C:\projects\sifteosdk\/include\sifteo/array.h \
-  C:\projects\sifteosdk\/include\sifteo/memory.h \
-  C:\projects\sifteosdk\/include\sifteo/asset/audio.h \
-  C:\projects\sifteosdk\/include\sifteo/asset/image.h
+  C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/asset.h \
+  C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/asset/group.h \
+  C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/abi.h \
+  C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/abi/syscall.h \
+  C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/abi/types.h \
+  C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/abi/audio.h \
+  C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/abi/events.h \
+  C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/abi/vram.h \
+  C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/abi/asset.h \
+  C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/abi/elf.h \
+  C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/limits.h \
+  C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/macros.h \
+  C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/math.h \
+  C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/asset/loader.h \
+  C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/array.h \
+  C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/memory.h \
+  C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/asset/audio.h \
+  C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/asset/image.h
 
-C:\projects\sifteosdk\/include\sifteo/asset.h:
+C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/asset.h:
 
-C:\projects\sifteosdk\/include\sifteo/asset/group.h:
+C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/asset/group.h:
 
-C:\projects\sifteosdk\/include\sifteo/abi.h:
+C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/abi.h:
 
-C:\projects\sifteosdk\/include\sifteo/abi/syscall.h:
+C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/abi/syscall.h:
 
-C:\projects\sifteosdk\/include\sifteo/abi/types.h:
+C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/abi/types.h:
 
-C:\projects\sifteosdk\/include\sifteo/abi/audio.h:
+C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/abi/audio.h:
 
-C:\projects\sifteosdk\/include\sifteo/abi/events.h:
+C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/abi/events.h:
 
-C:\projects\sifteosdk\/include\sifteo/abi/vram.h:
+C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/abi/vram.h:
 
-C:\projects\sifteosdk\/include\sifteo/abi/asset.h:
+C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/abi/asset.h:
 
-C:\projects\sifteosdk\/include\sifteo/abi/elf.h:
+C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/abi/elf.h:
 
-C:\projects\sifteosdk\/include\sifteo/limits.h:
+C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/limits.h:
 
-C:\projects\sifteosdk\/include\sifteo/macros.h:
+C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/macros.h:
 
-C:\projects\sifteosdk\/include\sifteo/math.h:
+C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/math.h:
 
-C:\projects\sifteosdk\/include\sifteo/asset/loader.h:
+C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/asset/loader.h:
 
-C:\projects\sifteosdk\/include\sifteo/array.h:
+C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/array.h:
 
-C:\projects\sifteosdk\/include\sifteo/memory.h:
+C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/memory.h:
 
-C:\projects\sifteosdk\/include\sifteo/asset/audio.h:
+C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/asset/audio.h:
 
-C:\projects\sifteosdk\/include\sifteo/asset/image.h:
+C:\SuperSoul\Research\Sifteo\sifteo-sdk\/include\sifteo/asset/image.h:

@@ -6,7 +6,9 @@
 
 #pragma once
 
-extern Sifteo::AssetGroup BootstrapAssets;
 extern Sifteo::AssetGroup IconAssets;
 extern const Sifteo::AssetImage Icon;
+extern Sifteo::AssetGroup BootstrapAssets;
+extern const Sifteo::AssetAudio CountSound;
 extern const Sifteo::AssetTracker Music;
+extern const Sifteo::AssetTracker Count;
