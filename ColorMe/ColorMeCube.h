@@ -21,10 +21,15 @@ public:
 	void start();
 	bool update (TimeDelta timeStep);
 	void setVideoBuffer (VideoBuffer* buffer);
+	void touched();
+
+	void gameFinished (int winningColor);
 
 private:
 	VideoBuffer* buffer;
 	TiltShakeRecognizer motion;
+
+	int position = 0;
 
 };
 
