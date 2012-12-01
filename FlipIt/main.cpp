@@ -56,6 +56,9 @@ public:
     virtual bool update(TimeDelta timeStep);
 };
 
+BaseGame* CurrentGame;
+BaseGameCube* CurrentGameCube[gNumCubes];
+
 class FlipItcube : public BaseGameCube
 {
 public:
@@ -264,6 +267,12 @@ public:
     void init()
     {
     	randomGen.seed();
+
+		for (unsigned i = 0; i < gNumCubes; i++)
+		{
+			CurrentGameCube[i] = & flipItCube[i]; 
+			CurrentGameCube[i]->init(i);
+		}		
     }
 
     void start()
@@ -354,10 +363,6 @@ enum GameState
   StateResults
 };
 
-BaseGame* CurrentGame;
-BaseGameCube* CurrentGameCube[gNumCubes];
-
-
 void main()
 {
     GameState state = StateInit;
@@ -371,7 +376,6 @@ void main()
     handler.init();
 
     TimeStep ts;
-    bool isInitialized = false;
     float Delay;
     bool isDone;
 
@@ -382,17 +386,11 @@ void main()
         switch (state)
         {
             case StateInit:
-            CurrentGame->init();
-            for (unsigned i = 0; i < gNumCubes; i++)
-            {
-                CurrentGameCube[i] = & flipItCube[i]; 
-                CurrentGameCube[i]->init(i);
-            }
-            Delay = 3;
-            isInitialized = true;
-            playSfx (CountSound);
-            LOG ("Init\n");
-            state = StateStart;
+				CurrentGame->init();
+				Delay = 3;
+				playSfx (CountSound);
+				LOG ("Init\n");
+				state = StateStart;
             break;
 
             case StateStart:
@@ -405,31 +403,28 @@ void main()
                     {
                         CurrentGameCube[i]->start();
                     }
-                        LOG ("Start Done\n");
+                    LOG ("Start Done\n");
 		            state = StatePlay;
-
                 }
-//            LOG ("Start\n");
             break;
 
             case StatePlay:
+				isDone = CurrentGame->update(ts.delta());
 
-            	isDone = CurrentGame->update(ts.delta());
-
-            	if (isDone)
-            	{
-                               LOG ("Done\n");
-            state = StateResults;
-            Delay = 3;
-playSfx (CheersSound);
-                }
-                else
-                {
-                for (unsigned i = 0; i < gNumCubes; i++)
-                {
-                    CurrentGameCube[i]->update(ts.delta());
-                }
-                }
+				if (isDone)
+				{
+					LOG ("Game Done\n");
+					state = StateResults;
+					Delay = 3;
+					playSfx (CheersSound);
+				}
+				else
+				{
+					for (unsigned i = 0; i < gNumCubes; i++)
+					{
+						CurrentGameCube[i]->update(ts.delta());
+					}
+				}
             break;
 
             case StateResults:
@@ -437,9 +432,8 @@ playSfx (CheersSound);
 
                 if (Delay <= 0)
                 {
-            state = StateInit;
-            LOG ("Results Done\n");
-
+					state = StateInit;
+					LOG ("Results Done\n");
                 }
             break;
 
