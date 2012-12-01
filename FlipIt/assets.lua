@@ -10,6 +10,8 @@ FlipDown = image {"assets/flip_down.png", pinned=true}
 FlipLeft = image {"assets/flip_left.png", pinned=true}
 FlipRight = image {"assets/flip_right.png", pinned=true}
 FlipOver = image {"assets/flip_over.png", pinned=true}
-Green = image {"assets/green.png", pinned=true}
+First = image {"assets/place_1st.png", pinned=true}
+Second = image {"assets/place_2nd.png", pinned=true}
+Third = image {"assets/place_3nd.png", pinned=true}
 
 CountSound = sound { "assets/count.raw" }
