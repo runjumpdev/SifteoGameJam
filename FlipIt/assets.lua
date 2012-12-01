@@ -15,3 +15,5 @@ Second = image {"assets/place_2nd.png", pinned=true}
 Third = image {"assets/place_3nd.png", pinned=true}
 
 CountSound = sound { "assets/count.raw" }
+
+CheersSound = sound { "assets/Coin.raw" }
