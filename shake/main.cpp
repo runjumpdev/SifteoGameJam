@@ -37,7 +37,7 @@ public:
 	
 	static CubeSet outCubes; //cubes that have lost
 
-    void init(CubeID cube)
+    void init(CubeID cube, int wG)
     {
         frame = 0;
 	
@@ -55,33 +55,73 @@ public:
             initStar(i);
 
         // Our background is 18x18 to match BG0, and it seamlessly tiles
-        vid.bg0.image(vec(0,0), Background);
+		if (wG == 0)
+		{
+			vid.bg0.image(vec(0,0), BackgroundX);
+		}
+		else if (wG == 1)
+		{
+			vid.bg0.image(vec(0,0), BackgroundY);
+		}
 
         // Allocate 16x2 tiles on BG1 for text at the bottom of the screen
         vid.bg1.setMask(BG1Mask::filled(vec(0,12), vec(16,4)));
     }
     
-    void update(TimeDelta timeStep)
+    void update(TimeDelta timeStep, int wG, bool b)
     {
+	if (!b)
+	{
+		writeText("                                 ");
+		return;
+	}
+	if (wG == 0)
+		{
+			vid.bg0.image(vec(0,0), BackgroundXTwo);
+		}
+		else if (wG == 1)
+		{
+			vid.bg0.image(vec(0,0), BackgroundYTwo);
+		}
 		
 		writeScore(shakeScore);
 
-        Int2 accel = vid.physicalAccel().xy();
+		Int2 accel = vid.physicalAccel().xy();
+		float delta;
+		
+		if (wG == 0)
+		{
+			delta = accel.x - lastAccel.x;
+		}
+		else if (wG == 1)
+		{
+			delta = accel.y - lastAccel.y;
+		}
+        
+		delta = Sifteo::abs(delta);
+		
         //Float2 tilt = accel * starTiltSpeed;
         
-		float x = accel.x - lastAccel.x;
-		float y = accel.y - lastAccel.y;
+		//float x = accel.x - lastAccel.x;
+		//float y = accel.y - lastAccel.y;
 		//float z = accel.z - lastAccel.z;
 		
-		float deltaSquared = x * x + y * y; 
+		//float deltaSquared = x * x + y * y; 
 		
-		shakeCounter += deltaSquared;
+		//shakeCounter += deltaSquared;
+		shakeCounter += delta;
 		
-		if (shakeCounter > 512000)
+		if (shakeCounter > 1000)
 		{
-			shakeCounter -= 512000;
+			shakeCounter -= 1000;
 			shakeScore++;
 		}
+		
+		// if (shakeCounter > 512000)
+		// {
+			// shakeCounter -= 512000;
+			// shakeScore++;
+		// }
 		
 		lastAccel = accel;
         
@@ -146,25 +186,42 @@ void main()
 {
     static StarDemo instances[gNumCubes];
 
-	float timeElapsed = 0;
 	Random rand;
 	rand.seed();
-	float howLong = rand.random() * 12 + .5;
+	
+	int whichGame; //0 = x axis shake, 1 = y axis shake
+	whichGame = rand.randrange(0,2);
+	
+	float timeElapsed = 0;
+	
+	float startDelay = 2;
+	bool started = false;
+	
+	float howLong = rand.random() * 12 + 2.5;
 	
     AudioTracker::play(Music);
 
     for (unsigned i = 0; i < arraysize(instances); i++)
-        instances[i].init(i);
+        instances[i].init(i, whichGame);
     int numOut = 0;
     TimeStep ts;
     while (1) 
 	{
+	startDelay -= ts.delta();
+	if (startDelay <= 0)
+	{
+		
+		started = true;
+	}
+	if (started)
+	{
 		timeElapsed += ts.delta();
+	}
 		if (timeElapsed < howLong)
 		{
 			for (unsigned i = 0; i < arraysize(instances); i++)
 			{
-					instances[i].update(ts.delta());
+					instances[i].update(ts.delta(), whichGame, started);
 					if (instances[i].isOut && instances[i].rank == 0)
 					{
 						
