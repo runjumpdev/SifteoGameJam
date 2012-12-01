@@ -40,7 +40,26 @@ static void playSfx(const AssetAudio& sfx) {
     i = 1 - i;
 }
 
-class CubeTracker
+class BaseGameCube
+{
+public:
+    virtual void init(CubeID initcube);
+    virtual void start();
+    virtual void update(TimeDelta timeStep);
+};
+
+class BaseGame
+{
+public:
+    virtual void init();
+    virtual void start();
+    virtual bool update(TimeDelta timeStep);
+};
+
+BaseGame* CurrentGame;
+BaseGameCube* CurrentGameCube[gNumCubes];
+
+class FlipItcube : public BaseGameCube
 {
 public:
 
@@ -64,7 +83,7 @@ public:
 
 	int place = -1;
 
-	CubeTracker()
+	FlipItcube()
 	{
 	}
 
@@ -147,6 +166,7 @@ public:
 		started = true;
 		finished = false;
 		moveSuccess = false;
+
 	}
 
 	void registerListener(CubeID cube)
@@ -227,9 +247,9 @@ public:
 	}
 };
 
-static CubeTracker flipItCube[gNumCubes];
+static FlipItcube flipItCube[gNumCubes];
 
-class FlipItGame
+class FlipItGame : public BaseGame
 {
 	Random randomGen;
 
@@ -247,6 +267,12 @@ public:
     void init()
     {
     	randomGen.seed();
+
+		for (unsigned i = 0; i < gNumCubes; i++)
+		{
+			CurrentGameCube[i] = & flipItCube[i]; 
+			CurrentGameCube[i]->init(i);
+		}		
     }
 
     void start()
@@ -261,6 +287,11 @@ public:
 
     	lastFoundPlace = 0;
     	finishedPieces = 0;
+
+                    for (unsigned i = 0; i < arraysize(flipItCube); i++)
+                    {
+                        flipItCube[i].setFlipDir(getFlipDir());
+                    }
 
     }
 
@@ -324,10 +355,18 @@ public:
 	}
 };
 
-
+enum GameState
+{
+  StateInit,
+  StateStart,
+  StatePlay,
+  StateResults
+};
 
 void main()
 {
+    GameState state = StateInit;
+
     for (unsigned i = 0; i < arraysize(cubeVideo); i++)
     {
         InitCube(i, i);
@@ -337,53 +376,69 @@ void main()
     handler.init();
 
     TimeStep ts;
-    bool isInitialized = false;
-    float startDelay;
+    float Delay;
+    bool isDone;
+
+    CurrentGame = &flipItGame;
 
     while (1)
     {
-        if (!isInitialized)
+        switch (state)
         {
-            flipItGame.init();
-            for (unsigned i = 0; i < arraysize(flipItCube); i++)
-            {
-                flipItCube[i].init(i);
-            }
-            startDelay = 3;
-            isInitialized = true;
-            playSfx (CountSound);
-        }
-        else
-        {
-            if (startDelay > 0)
-            {
-                startDelay -= float(ts.delta());
+            case StateInit:
+				CurrentGame->init();
+				Delay = 3;
+				playSfx (CountSound);
+				LOG ("Init\n");
+				state = StateStart;
+            break;
 
-                if (startDelay <= 0)
+            case StateStart:
+                Delay -= float(ts.delta());
+
+                if (Delay <= 0)
                 {
-                    flipItGame.start();
-                    for (unsigned i = 0; i < arraysize(flipItCube); i++)
+                    CurrentGame->start();
+                    for (unsigned i = 0; i < gNumCubes; i++)
                     {
-                    	flipItCube[i].setFlipDir(flipItGame.getFlipDir());
-                        flipItCube[i].start();
+                        CurrentGameCube[i]->start();
                     }
+                    LOG ("Start Done\n");
+		            state = StatePlay;
                 }
-            }
-            else
-            {
-            	bool isDone = flipItGame.update(ts.delta());
+            break;
 
-            	if (isDone)
-            	{
-            		isInitialized = false;
-            	}
-                for (unsigned i = 0; i < arraysize(flipItCube); i++)
+            case StatePlay:
+				isDone = CurrentGame->update(ts.delta());
+
+				if (isDone)
+				{
+					LOG ("Game Done\n");
+					state = StateResults;
+					Delay = 3;
+					playSfx (CheersSound);
+				}
+				else
+				{
+					for (unsigned i = 0; i < gNumCubes; i++)
+					{
+						CurrentGameCube[i]->update(ts.delta());
+					}
+				}
+            break;
+
+            case StateResults:
+                Delay -= float(ts.delta());
+
+                if (Delay <= 0)
                 {
-                    flipItCube[i].update(ts.delta());
+					state = StateInit;
+					LOG ("Results Done\n");
                 }
+            break;
 
-            }
         }
+
         System::paint();
         ts.next();
     }
