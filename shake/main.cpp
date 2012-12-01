@@ -15,7 +15,7 @@ static AssetSlot MainSlot = AssetSlot::allocate()
     .bootstrap(GameAssets);
 
 static Metadata M = Metadata()
-    .title("R U Game")
+    .title("shake")
     .package("empty", "1.0")
     .icon(Icon)
     .cubeRange(gNumCubes);
@@ -40,11 +40,13 @@ public:
     void init(CubeID cube)
     {
         frame = 0;
-		timeElapsed = 0;
+	
         bg.x = 0;
         bg.y = 0;
 		rank = 0;
-		isOut = false;
+		
+		shakeScore = 0;
+		shakeCounter = 0;
 		
         vid.initMode(BG0_SPR_BG1);
         vid.attach(cube);
@@ -61,22 +63,8 @@ public:
     
     void update(TimeDelta timeStep)
     {
-		if (isOut)
-		{
-			frame = 7;
-			text.set(0, 8);
-			textTarget = text;
-			if (rank == 1)
-			writeText(" Rank 3         ");
-			else if (rank == 2)
-			writeText(" Rank 2         ");
-			else if (rank == 3)
-			writeText(" Rank 1         ");
-		}
-		else
-		{	
-			writeScore(50);
-		}
+		
+		writeScore(shakeScore);
 
         Int2 accel = vid.physicalAccel().xy();
         //Float2 tilt = accel * starTiltSpeed;
@@ -87,19 +75,22 @@ public:
 		
 		float deltaSquared = x * x + y * y; 
 		
-		if (deltaSquared > 128)
+		shakeCounter += deltaSquared;
+		
+		if (shakeCounter > 512000)
 		{
-			isOut = true;
+			shakeCounter -= 512000;
+			shakeScore++;
 		}
 		
 		lastAccel = accel;
         
-        for (unsigned i = 0; i < numStars; i++) 
-		{
-            const Float2 center = { 64 - 16.0f, 64 - 16.0f };
-            vid.sprites[i].setImage(Star, frame % Star.numFrames());
-            vid.sprites[i].move(stars[i].pos + center);
-        }
+        // for (unsigned i = 0; i < numStars; i++) 
+		// {
+            // const Float2 center = { 64 - 16.0f, 64 - 16.0f };
+            // vid.sprites[i].setImage(Star, frame % Star.numFrames());
+            // vid.sprites[i].move(stars[i].pos + center);
+        // }
 		
         //Float2 bgVelocity = bgTiltSpeed + vec(0.0f, -1.0f) * bgScrollSpeed;
         //bg += float(timeStep) * bgVelocity;
@@ -115,9 +106,11 @@ private:
     
     VideoBuffer vid;
     unsigned frame;
-	float timeElapsed;
+	
     Float2 bg, text, textTarget;
     float fpsTimespan;
+	int shakeScore;
+	float shakeCounter;
 
     void writeText(const char *str)
     {
@@ -153,6 +146,11 @@ void main()
 {
     static StarDemo instances[gNumCubes];
 
+	float timeElapsed = 0;
+	Random rand;
+	rand.seed();
+	float howLong = rand.random() * 12 + .5;
+	
     AudioTracker::play(Music);
 
     for (unsigned i = 0; i < arraysize(instances); i++)
@@ -161,17 +159,21 @@ void main()
     TimeStep ts;
     while (1) 
 	{
-        for (unsigned i = 0; i < arraysize(instances); i++)
+		timeElapsed += ts.delta();
+		if (timeElapsed < howLong)
 		{
-				instances[i].update(ts.delta());
-				if (instances[i].isOut && instances[i].rank == 0)
-				{
-					
-					numOut++;
-					instances[i].rank = numOut;
-				}
+			for (unsigned i = 0; i < arraysize(instances); i++)
+			{
+					instances[i].update(ts.delta());
+					if (instances[i].isOut && instances[i].rank == 0)
+					{
+						
+						numOut++;
+						instances[i].rank = numOut;
+					}
+			}
 		}
-		if (numOut == arraysize(instances))
+		else
 		{
 			AudioTracker::stop();
 		}
