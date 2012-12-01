@@ -21,37 +21,136 @@
 #include "assets.gen.h"
 using namespace Sifteo;
 
+static const unsigned gNumCubes = 3;
+
+static VideoBuffer cubeVideo[gNumCubes];
+
 static Metadata M = Metadata()
 		.title("FlipIt")
 		.package("com.bmg.sifteo.flipit","1.0")
 		.icon(Icon)
-		.cubeRange(3);
-
-static VideoBuffer vid;
-static VideoBuffer vid1;
-static VideoBuffer vid2;
+		.cubeRange(gNumCubes);
 
 static AssetSlot MainSlot = AssetSlot::allocate().bootstrap(BootstrapAssets);
 
+static void playSfx(const AssetAudio& sfx) {
+    static int i=0;
+    AudioChannel(i).play(sfx);
+    i = 1 - i;
+}
+
+
+class FlipItCube
+{
+public:
+    void init(CubeID initcube)
+    {
+	cube = initcube;
+
+        cubeVideo[cube].bg0.image(vec(0,0), FlipLeft);
+
+        // Allocate 16x2 tiles on BG1 for text at the bottom of the screen
+        //vid.bg1.setMask(BG1Mask::filled(vec(0,14), vec(16,2)));
+    }
+
+    void start()
+    {
+    }
+    
+    void update(TimeDelta timeStep)
+    {
+        //LOG("update cube %i\n", (int)cube);
+        cubeVideo[cube].bg0.image(vec(0,0), FlipDown);
+    }
+
+private:       
+    CubeID cube;
+};
+
+
+class FlipItGame
+{
+public:
+    void init()
+    {
+    }
+    
+    void start()
+    {
+        //AudioTracker::play(Music);
+    }
+    
+    void update(TimeDelta timeStep)
+    {
+        //LOG("update game\n");
+    }
+
+private:
+
+};
+
+static FlipItCube flipItCube[gNumCubes];
+static FlipItGame flipItGame;
+
+
+static void InitCube(int CubeIndex, CubeID cube)
+{
+    cubeVideo[CubeIndex].initMode(BG0_SPR_BG1);
+    cubeVideo[CubeIndex].attach(cube);
+}
+
+
 void main()
 {
-	vid.initMode(BG0);
-	vid.attach(0);
-	vid.bg0.image(vec(0,0), FlipLeft);
+    for (unsigned i = 0; i < arraysize(cubeVideo); i++)
+    {
+        InitCube(i, i);
+    }
 
-	vid1.initMode(BG0);
-	vid1.attach(1);
-	vid1.bg0.image(vec(0,0), FlipRight);
+    TimeStep ts;
+    bool isInitialized = false;
+    float startDelay;
 
-	vid2.initMode(BG0);
-	vid2.attach(2);
-	vid2.bg0.image(vec(0,0), FlipDown);
+    while (1)
+    {
+        if (!isInitialized)
+        {
+            flipItGame.init();
+            for (unsigned i = 0; i < arraysize(flipItCube); i++)
+            {
+                flipItCube[i].init(i);
+            }
+            startDelay = 3;
+            isInitialized = true;
+	    playSfx (CountSound);
+        }
+        else
+        {
+            if (startDelay > 0)
+            {
+                startDelay -= float(ts.delta());
 
-	while (1)
-	{
-		System::paint();
-	}
-
+                if (startDelay <= 0)
+                {
+                    flipItGame.start();
+                    for (unsigned i = 0; i < arraysize(flipItCube); i++)
+                    {
+                        flipItCube[i].start();
+                    }
+                }
+            }
+            else
+            {
+                flipItGame.update(ts.delta());
+                for (unsigned i = 0; i < arraysize(flipItCube); i++)
+                {
+                    flipItCube[i].update(ts.delta());
+                }
+            }
+        }
+        System::paint();
+        ts.next();
+    }
 }
 
 
