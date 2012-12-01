@@ -11,3 +11,5 @@ FlipLeft = image {"assets/flip_left.png", pinned=true}
 FlipRight = image {"assets/flip_right.png", pinned=true}
 FlipOver = image {"assets/flip_over.png", pinned=true}
 Green = image {"assets/green.png", pinned=true}
+
+CountSound = sound { "assets/count.raw" }

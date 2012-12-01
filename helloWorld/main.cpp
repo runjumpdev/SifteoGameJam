@@ -37,7 +37,7 @@ void main()
 	
 	playSfx (CountSound);
 
-//	AudioTracker::play(CountSound);
+//	AudioTracker::play(Count);
 
 	while (1)
         System::paint();

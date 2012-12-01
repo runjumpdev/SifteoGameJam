@@ -150,7 +150,7 @@ public:
 		move = abs(move);
 
 		// Cube Face Up, Fip To the "Left" is -X axis
-		if (move < 3 && moveSuccess == false)
+		if (move < 3)
 		{
 			moveSuccess = true;
 			LOG ("MOVE SUCCESS %d\n", move);
@@ -183,8 +183,3 @@ void main()
 	}
 
 }
-
-
-
-
-

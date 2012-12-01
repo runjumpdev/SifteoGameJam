@@ -5,7 +5,7 @@ Music = tracker{ "ultrasyd-toy_world.xm" }
 
 Count = tracker{ "count.xm" }
 
-CountSound = sound { "count.xm" }
+CountSound = sound { "count.raw" }
 
 BootstrapAssets = group{ quality=9.9 }
 
