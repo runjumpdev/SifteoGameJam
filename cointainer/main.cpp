@@ -50,19 +50,11 @@ public:
 
 
 // Single coin
-// Intended to be part of a linked list, but *next init to NULL caused linker errors.
-class Coin {
-private:
-  Float2 _velocity;
-  Float2 _position;
-
-public:
-  Coin *next = NULL;
-
-  Float2 pos()                     { return _position; }
-  Float2 pos(Float2 new_pos)       { return _position = new_pos; }
-  Float2 velocity()                { return _velocity; }
-  Float2 velocity(Float2 new_velo) { return _velocity = new_velo; }
+//
+// Intended to be a class in a linked list, but *next init to NULL caused
+// linker errors.
+struct Coin {
+  Float2 pos, velocity;
 };
 
 
@@ -75,16 +67,20 @@ private:
   VideoBuffer vid;
   Float2 bg, text, textTarget;
 
+  int animated_coin_count = 0;
+
   Coin *coins_head = NULL;
   Coin *coins_tail = NULL;
+
+  int score = 0;
 
 public:
   void init(unsigned cid) {
     Events::neighborAdd.set(&Cointainer::onNeighborAdd, this);
     Events::neighborRemove.set(&Cointainer::onNeighborRemove, this);
-//     // String<32> logmsg;
-//     // logmsg << "init cube #" << Fixed(cid, 2);
-//     LOG("init cube #%d\n", cid);
+    // String<32> logmsg;
+    // logmsg << "init cube #" << Fixed(cid, 2);
+    LOG("init cube #%d\n", cid);
   }
 
   void update(float delta) {
@@ -113,44 +109,18 @@ public:
 
   void add_coin() {
     LOG("coin added\n");
-    // create a coin
-    // set its initial position & velocity
-    // add to linked list
-    // update coins_head
-    Coin *new_coin = new Coin();
-    // new_coin->pos(COIN_START_POS);
-    // new_coin->velocity(COIN_START_VELOCITY);
-
-    // coins_head->next = new_coin;
-    // coins_head = new_coin;
+    animated_coin_count++;
+    score++;
+    LOG("score: %d\n", score);
   }
 
-//   void delete_coin(Coin *target_coin = NULL) {
-//     Coin *current_coin = coins_tail;
-
-//     if ( current_coin == target_coin || target_coin == NULL ) {
-//       // Target is tail? Update the tail.
-//       coins_tail = current_coin->next;
-//     } else {
-//       // Comb thru list for target coin.
-//       while ( current_coin != NULL ) {
-//         if ( current_coin->next == target_coin ) {
-//           // Found it! Remove from the list.
-//           current_coin->next == target_coin->next;
-//           current_coin = target_coin;
-//           break;
-//         }
-//         current_coin = current_coin->next;
-//       }
-//     }
-
-//     // Cleanup.
-//     if ( current_coin != NULL ) delete current_coin;
-//   }
+  void delete_coin() {
+    LOG("coin finished\n");
+    animated_coin_count--;
+  }
 
   void animate_coins(float delta) {
-    Coin *current_coin = coins_tail;
-    while ( current_coin != NULL ) {
+    if ( animated_coin_count > 0 ) {
       // Animate!
     }
   }
