@@ -1,0 +1,11 @@
+.gitignore
+
+// Auto-generated asset helper files
+assets.gen.cpp
+assets.gen.h
+
+// Binary objects
+*.o
+*.d
+*.elf
+
