@@ -333,6 +333,265 @@ private:
 static FlipItGame flipItGame;
 
 
+//Shake game
+//-------------------------------------
+
+class Shakecube : public BaseGameCube
+{
+public:
+
+    int whichGame; //0 = x axis shake, 1 = y axis shake
+
+		Int2 lastAccel;
+
+	CubeID cube;
+	
+	bool started = false;
+
+	bool finished = false;
+
+	int place = -1;
+
+	Float2 text, textTarget;
+	
+	Shakecube()
+	{
+	}
+
+	bool isFinished()
+	{
+		return finished;
+	}
+
+	int getPlace()
+	{
+		return place;
+	}
+
+	void setPlace (int newPlace)
+	{
+		LOG ("Cube %d finished %d\n", (int)cube, newPlace);
+
+		place = newPlace;
+
+		switch (newPlace)
+		{
+		case 0:
+			cubeVideo[cube].bg0.image(vec(0,0), First);
+			break;
+		case 1:
+			cubeVideo[cube].bg0.image(vec(0,0), Second);
+			break;
+		case 2:
+			cubeVideo[cube].bg0.image(vec(0,0), Third);
+			break;
+		}
+	}
+
+	void update(TimeDelta timeStep)
+	{
+		//LOG("Update");
+		if (whichGame == 0)
+		{
+			cubeVideo[cube].bg0.image(vec(0,0), BackgroundXTwo);
+		}
+		else if (whichGame == 1)
+		{
+			cubeVideo[cube].bg0.image(vec(0,0), BackgroundYTwo);
+		}
+		
+		writeScore(shakeScore);
+
+		Int2 accel = cubeVideo[cube].physicalAccel().xy();
+		float delta;
+		
+		if (whichGame == 0)
+		{
+			delta = accel.x - lastAccel.x;
+		}
+		else if (whichGame == 1)
+		{
+			delta = accel.y - lastAccel.y;
+		}
+        
+		delta = Sifteo::abs(delta);
+		
+		shakeCounter += delta;
+		
+		if (shakeCounter > 1000)
+		{
+			shakeCounter -= 1000;
+			shakeScore++;
+		}
+				
+		lastAccel = accel;
+        
+        cubeVideo[cube].bg1.setPanning(text.round());
+	}
+
+	void init (CubeID initCube)
+	{
+		cube = initCube;
+		place = -1;
+
+		shakeScore = 0;
+		shakeCounter = 0;
+	
+        // Our background is 18x18 to match BG0, and it seamlessly tiles
+		if (whichGame == 0)
+		{
+			cubeVideo[cube].bg0.image(vec(0,0), BackgroundX);
+		}
+		else if (whichGame == 1)
+		{
+			cubeVideo[cube].bg0.image(vec(0,0), BackgroundY);
+		}
+	
+	    // Allocate 16x2 tiles on BG1 for text at the bottom of the screen
+        cubeVideo[cube].bg1.setMask(BG1Mask::filled(vec(0,12), vec(16,4)));
+	}
+
+	void stop()
+	{
+		started = false;
+	}
+
+	void start()
+	{
+		started = true;
+		finished = false;
+
+	}
+	
+private:
+	int shakeScore;
+	float shakeCounter;
+	
+    void writeText(const char *str)
+    {
+        // Text on BG1, in the 16x2 area we allocated
+        cubeVideo[cube].bg1.text(vec(0,12), Font2, str);
+    }
+	
+	void writeScore(int i)
+	{
+		int maskWidth = 2;
+		
+		cubeVideo[cube].bg1.setMask(BG1Mask::filled(vec(0,12), vec(maskWidth * 2, 4)));
+		text.set(-64 + maskWidth * 6, 52);
+		
+		String<3> bTest;
+		bTest << Fixed(i, maskWidth, true);
+		
+		textTarget = text;
+		writeText(bTest.c_str());
+	}
+};
+
+static Shakecube shakeCube[gNumCubes];
+
+class ShakeGame : public BaseGame
+{
+	Random rand;
+	
+	int whichGame; //0 = x axis shake, 1 = y axis shake
+
+	float timeElapsed = 0;
+
+	float startDelay = 2;
+	bool started = false;
+
+	SystemTime startTime;
+	
+	float howLong = rand.random() * 12 + 2.5;
+	
+    //AudioTracker::play(Music);
+
+	
+	bool gameOver = false;
+
+	int lastFoundPlace = 0;
+
+	int finishedPieces = 0;
+	
+	    int numOut = 0;
+
+
+public:
+    void init()
+    {
+  	    rand.seed();
+
+		whichGame = rand.randrange(0,1);
+
+		for (unsigned i = 0; i < gNumCubes; i++)
+		{
+			CurrentGameCube[i] = & shakeCube[i]; 
+			CurrentGameCube[i]->init(i);
+			shakeCube[i].whichGame = whichGame;
+		}		
+    }
+
+    void start()
+    {
+	    AudioTracker::play(Music);
+		startTime = SystemTime::now();
+
+    	gameOver = false;
+    	started = true;
+
+    	lastFoundPlace = 0;
+    	finishedPieces = 0;
+    }
+
+    bool update(TimeDelta timeStep)
+    {
+//        LOG("update game\n");
+
+		timeElapsed += timeStep;
+		if (timeElapsed < howLong)
+		{
+			// for (unsigned i = 0; i < arraysize(instances); i++)
+			// {
+					// instances[i].update(ts.delta(), whichGame, started);
+					// if (instances[i].isOut && instances[i].rank == 0)
+					// {
+						
+						// numOut++;
+						// instances[i].rank = numOut;
+					// }
+			// }
+		}
+		else
+		{
+			AudioTracker::stop();
+		}
+
+        for (int i=0; i < arraysize(flipItCube); i++)
+        {
+        	if (flipItCube[i].isFinished() && (flipItCube[i].getPlace() < 0))
+        	{
+        		flipItCube[i].setPlace(lastFoundPlace);
+        		lastFoundPlace++;
+        		finishedPieces++;
+        	}
+        }
+
+        if (finishedPieces == arraysize(flipItCube))
+        {
+        	gameOver = true;
+        }
+
+        return gameOver;
+    }
+
+private:
+
+};
+
+static ShakeGame shakeGame;
+
+
 //Head balance game
 //-------------------------------------
 
@@ -716,17 +975,19 @@ void main()
 					state = StateInit;
 					LOG ("Results Done\n");
 					
-					int rand = randomGen.randint(0, 1);
+					int rand = randomGen.randint(0, 3);
 					switch (rand)
 					{
 					    case 0:
+						case 2:
+						case 3:
 						LOG ("Playing Flip It\n");
 						CurrentGame = &flipItGame;
 					    break;
 						
 					    case 1:
 						LOG ("Playing Shake\n");
-						CurrentGame = &flipItGame;
+						CurrentGame = &shakeGame;
 						break;
 					} 
                 }

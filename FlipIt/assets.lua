@@ -17,3 +17,12 @@ Third = image {"assets/place_3nd.png", pinned=true}
 CountSound = sound { "assets/count.raw" }
 
 CheersSound = sound { "assets/Coin.raw" }
+
+
+BackgroundX = image{"assets/shake_X.png", quality=10}
+BackgroundY = image{"assets/shake_Y.png", quality=10}
+BackgroundXTwo = image{"assets/shake_X_Blank.png", quality=10}
+BackgroundYTwo = image{"assets/shake_Y_Blank.png", quality=10}
+Font2 = image{"assets/font-8x162.png", pinned=true, width=16, height=32}
+
+Music = tracker{"assets/sv_ttt.xm"}
