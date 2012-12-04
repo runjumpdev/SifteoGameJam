@@ -29,6 +29,15 @@ private:
 
 	ColorMeCube cubes[10];
 	int actualCubes = 0;
+	SystemTime startTime;
+
+	float timeLeft;
+
+	float gameIntervalLeft;
+
+	bool gameRunning;
+
+	Random randGenerator;
 };
 
 #endif /* COLORMEGAME_H_ */
