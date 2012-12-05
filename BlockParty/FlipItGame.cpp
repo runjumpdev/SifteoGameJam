@@ -1,14 +1,15 @@
 #include "FlipItGame.h"
 
-void FlipItGame::init()
+void FlipItGame::init(unsigned count, VideoBuffer buffers[])
 {
-	randomGen.seed();
+	for (unsigned i = 0; i < count; i++)
+	{
+		cubes[i] = & flipItCube[i]; 
+	}
 
-	//for (unsigned i = 0; i < gNumCubes; i++)
-	//{
-	//	CurrentGameCube[i] = & flipItCube[i]; 
-	//	CurrentGameCube[i]->init(i);
-	//}
+	BaseGame::init(count, buffers);
+	
+	randomGen.seed();
 }
 
 void FlipItGame::start()
@@ -18,13 +19,10 @@ void FlipItGame::start()
 
 	flipDir = rand;
 
-	gameOver = false;
-	started = true;
-
 	lastFoundPlace = 0;
 	finishedPieces = 0;
 
-    for (unsigned i = 0; i < arraysize(flipItCube); i++)
+    for (unsigned i = 0; i < CubeCount; i++)
     {
         flipItCube[i].setFlipDir(getFlipDir());
     }
@@ -34,29 +32,25 @@ void FlipItGame::start()
 
 bool FlipItGame::update(TimeDelta timeStep)
 {
-//        LOG("update game\n");
-
-    for (int i=0; i < arraysize(flipItCube); i++)
+    for (int i=0; i < CubeCount; i++)
     {
-    	if (flipItCube[i].isFinished() && (flipItCube[i].getPlace() < 0))
+    	if (flipItCube[i].finished && (flipItCube[i].place < 0))
     	{
-    		flipItCube[i].setPlace(lastFoundPlace);
+    		flipItCube[i].SetPlace(lastFoundPlace);
     		lastFoundPlace++;
     		finishedPieces++;
     	}
     }
 
-    if (finishedPieces == arraysize(flipItCube))
+    if (finishedPieces == CubeCount)
     {
-    	gameOver = true;
+    	return true;
     }
-
-	if (!gameOver)
+	else
 	{
 		BaseGame::update(timeStep);
+		return false;
 	}
-
-    return gameOver;
 }
 
 int FlipItGame::getFlipDir()

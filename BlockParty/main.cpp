@@ -6,8 +6,12 @@
 #include "FlipItGame.h"
 #include "ShakeCube.h"
 #include "ShakeGame.h"
+#include "ColorMeCube.h"
+#include "ColorMeGame.h"
+
 using namespace Sifteo;
 
+static const unsigned gNumCubes = 3;
 static VideoBuffer cubeVideo[gNumCubes];
 static TiltShakeRecognizer motion[gNumCubes];
 
@@ -29,12 +33,16 @@ static void playSfx(const AssetAudio& sfx) {
 BaseGame* CurrentGame;
 static FlipItGame flipItGame;
 static ShakeGame shakeGame;
+static ColorMeGame colorMeGame;
 
-static void InitCube(int CubeIndex, CubeID cube)
+static void InitCubes()
 {
-    cubeVideo[CubeIndex].initMode(BG0_SPR_BG1);
-    cubeVideo[CubeIndex].attach(cube);
-    motion[CubeIndex].attach(CubeIndex);
+    for (unsigned i = 0; i < arraysize(cubeVideo); i++)
+    {
+		cubeVideo[i].initMode(BG0_SPR_BG1);
+		cubeVideo[i].attach(i);
+		motion[i].attach(i);
+    }
 }
 
 //Event listener
@@ -49,12 +57,18 @@ public:
 
 	void onAccelChange(unsigned id)
 	{
-		CurrentGame->onAccelChange(id);
+		if (CurrentGame->IsStarted)
+		{
+			CurrentGame->onAccelChange(id);
+		}
 	}
 
 	void onTouch (unsigned id)
 	{
-		CurrentGame->onTouch(id);
+		if (CurrentGame->IsStarted)
+		{
+			CurrentGame->onTouch(id);
+		}
 	}
 };
 
@@ -73,11 +87,8 @@ void main()
 	Random randomGen;
   	randomGen.seed();
 
-    for (unsigned i = 0; i < arraysize(cubeVideo); i++)
-    {
-        InitCube(i, i);
-    }
-
+	InitCubes();
+	
     EventHandler handler;
     handler.init();
 
@@ -90,9 +101,8 @@ void main()
         switch (state)
         {
             case StateInit:
-				CurrentGame->init();
-				CurrentGame->setVideoBuffer(cubeVideo, gNumCubes);
-				CurrentGame->setTiltShakeRecognizer(motion, gNumCubes);
+				CurrentGame->init(gNumCubes, cubeVideo);
+				CurrentGame->setTiltShakeRecognizer(motion, gNumCubes);				
 				Delay = 3;
 				playSfx (CountSound);
 				LOG ("Init\n");
@@ -116,6 +126,7 @@ void main()
 				if (isDone)
 				{
 					LOG ("Game Done\n");
+					CurrentGame->stop();
 					state = StateResults;
 					Delay = 3;
 					playSfx (CheersSound);
@@ -131,20 +142,24 @@ void main()
 					state = StateInit;
 					LOG ("Results Done\n");
 					
-					int rand = randomGen.randint(0, 3);
+					int rand = randomGen.randint(0, 2);
 					switch (rand)
 					{
 					    case 0:
-						case 2:
-						case 3:
-						LOG ("Playing Flip It\n");
-						CurrentGame = &flipItGame;
-					    break;
+							LOG ("Playing Flip It\n");
+							CurrentGame = &flipItGame;
+							break;
 						
-					    case 1:
-						LOG ("Playing Shake\n");
-						CurrentGame = &shakeGame;
-						break;
+						case 1:
+							LOG ("Playing Color Me\n");
+							CurrentGame = &colorMeGame;
+							break;
+
+						case 2:
+							LOG ("Playing Shake\n");
+							CurrentGame = &shakeGame;
+							break;
+
 					} 
                 }
             break;

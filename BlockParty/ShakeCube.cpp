@@ -6,12 +6,8 @@ ShakeCube::ShakeCube()
 
 void ShakeCube::init (CubeID initCube)
 {
-	cube = initCube;
-	place = -1;
-
-	shakeScore = 0;
-	shakeCounter = 0;
-
+	BaseGameCube::init(initCube);
+	
     // Our background is 18x18 to match BG0, and it seamlessly tiles
 	if (whichGame == 0)
 	{
@@ -21,16 +17,15 @@ void ShakeCube::init (CubeID initCube)
 	{
 		buffer->bg0.image(vec(0,0), BackgroundY);
 	}
-
-    // Allocate 16x2 tiles on BG1 for text at the bottom of the screen
-    buffer->bg1.setMask(BG1Mask::filled(vec(0,12), vec(16,4)));
 }
 
 void ShakeCube::start()
 {
-	started = true;
-	finished = false;
+	shakeScore = 0;
+	shakeCounter = 0;
 
+    // Allocate 16x2 tiles on BG1 for text at the bottom of the screen
+    buffer->bg1.setMask(BG1Mask::filled(vec(0,12), vec(16,4)));
 }
 
 void ShakeCube::update(TimeDelta timeStep)
@@ -74,41 +69,11 @@ void ShakeCube::update(TimeDelta timeStep)
     buffer->bg1.setPanning(text.round());
 }
 
-bool ShakeCube::isFinished()
+void ShakeCube::SetPlace (int newPlace)
 {
-	return finished;
+	buffer->bg1.eraseMask();
+	BaseGameCube::SetPlace(newPlace);
 }
-
-int ShakeCube::getPlace()
-{
-	return place;
-}
-
-void ShakeCube::setPlace (int newPlace)
-{
-	LOG ("Cube %d finished %d\n", (int)cube, newPlace);
-
-	place = newPlace;
-
-	switch (newPlace)
-	{
-	case 0:
-		buffer->bg0.image(vec(0,0), First);
-		break;
-	case 1:
-		buffer->bg0.image(vec(0,0), Second);
-		break;
-	case 2:
-		buffer->bg0.image(vec(0,0), Third);
-		break;
-	}
-}
-
-void ShakeCube::stop()
-{
-	started = false;
-}
-
 
 void ShakeCube::writeText(const char *str)
 {

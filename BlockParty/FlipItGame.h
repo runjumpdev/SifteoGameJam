@@ -13,7 +13,7 @@ class FlipItGame : public BaseGame
 {
 public:
 	//Common
-    void init();
+    void init(unsigned count, VideoBuffer buffers[]);
 	void start();
 	bool update(TimeDelta timeStep);
 
@@ -25,15 +25,11 @@ private:
 
 	int flipDir;
 
-	bool gameOver = false;
-
-	bool started = false;
-
 	int lastFoundPlace = 0;
 
 	int finishedPieces = 0;
 
-	FlipItCube flipItCube[gNumCubes];
+	FlipItCube flipItCube[10];
 };
 
 #endif /* FLIPITGAME_H_ */

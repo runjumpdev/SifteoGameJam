@@ -1,67 +1,81 @@
 #include "ShakeGame.h"
 
-void ShakeGame::init()
+void ShakeGame::init(unsigned count, VideoBuffer buffers[])
 {
+	for (unsigned i = 0; i < count; i++)
+	{
+		cubes[i] = & shakeCube[i]; 
+	}
+
+	BaseGame::init(count, buffers);
+	
     rand.seed();
 
 	whichGame = rand.randrange(0,1);
 
-	for (unsigned i = 0; i < gNumCubes; i++)
+	for (unsigned i = 0; i < CubeCount; i++)
 	{
-		shakeCube[i].init(i);
 		shakeCube[i].whichGame = whichGame;
-	}		
+	}
 }
 
 void ShakeGame::start()
 {
     AudioTracker::play(Music);
-	startTime = SystemTime::now();
+	
+	howLong = rand.random() * 12 + 2.5;
+	timeElapsed = 0;
+	LOG("Delay %f\n", howLong);
 
-	gameOver = false;
-	started = true;
-
-	lastFoundPlace = 0;
-	finishedPieces = 0;
+	BaseGame::start();
 }
 
 bool ShakeGame::update(TimeDelta timeStep)
 {
-//        LOG("update game\n");
-
-	timeElapsed += timeStep;
-	if (timeElapsed < howLong)
+	timeElapsed += timeStep.seconds();
+	if (timeElapsed <= howLong)
 	{
-		// for (unsigned i = 0; i < arraysize(instances); i++)
-		// {
-				// instances[i].update(ts.delta(), whichGame, started);
-				// if (instances[i].isOut && instances[i].rank == 0)
-				// {
-					
-					// numOut++;
-					// instances[i].rank = numOut;
-				// }
-		// }
+		BaseGame::update(timeStep);
+		return false;
 	}
 	else
 	{
+		LOG("Elapsed %f\n", timeElapsed);
+		CalcPlaces();
 		AudioTracker::stop();
+		return true;
 	}
+}
 
-    for (int i=0; i < arraysize(shakeCube); i++)
-    {
-    	if (shakeCube[i].isFinished() && (shakeCube[i].getPlace() < 0))
-    	{
-    		shakeCube[i].setPlace(lastFoundPlace);
-    		lastFoundPlace++;
-    		finishedPieces++;
-    	}
-    }
+void ShakeGame::CalcPlaces()
+{
+	unsigned lastpos = 0;
+	int topscore;
 
-    if (finishedPieces == arraysize(shakeCube))
-    {
-    	gameOver = true;
-    }
+	do
+	{
+		topscore = -1;
 
-    return gameOver;
+		//Find top score
+		for (unsigned i = 0; i < CubeCount; i++)
+		{
+			if ((shakeCube[i].place == -1) && (shakeCube[i].shakeScore > topscore))
+			{	
+				topscore = shakeCube[i].shakeScore;
+			}
+		}
+		
+		//Assign place to people that have high score
+		if (topscore != -1)
+		{
+			for (unsigned i = 0; i < CubeCount; i++)
+			{
+				if ((shakeCube[i].place == -1) && (shakeCube[i].shakeScore == topscore))
+				{	
+					shakeCube[i].SetPlace(lastpos);
+				}
+			}
+			lastpos++;
+		}
+	} while (topscore != -1);
 }

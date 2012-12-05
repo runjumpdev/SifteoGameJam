@@ -13,36 +13,22 @@ class ShakeGame : public BaseGame
 {
 public:
 	//Common
-    void init();
+    void init(unsigned count, VideoBuffer buffers[]);
 	void start();
 	bool update(TimeDelta timeStep);
 
 private:
+	void CalcPlaces();
+	
 	Random rand;
 	
 	int whichGame; //0 = x axis shake, 1 = y axis shake
 
 	float timeElapsed = 0;
-
-	float startDelay = 2;
-	bool started = false;
-
-	SystemTime startTime;
 	
-	float howLong = rand.random() * 12 + 2.5;
+	float howLong;
 	
-    //AudioTracker::play(Music);
-
-	
-	bool gameOver = false;
-
-	int lastFoundPlace = 0;
-
-	int finishedPieces = 0;
-	
-	int numOut = 0;
-
-	ShakeCube shakeCube[gNumCubes];
+	ShakeCube shakeCube[10];
 };
 
 #endif /* SHAKEGAME_H_ */
