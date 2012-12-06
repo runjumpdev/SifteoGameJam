@@ -8,20 +8,25 @@
 #include "ShakeGame.h"
 #include "ColorMeCube.h"
 #include "ColorMeGame.h"
+#include "HotCubeGame.h"
 
 using namespace Sifteo;
 
+// TODO: Change this to a runtime number?
+//  Sensors shows CubeSet::connected() event to determine connected cubes
+//  and use const to declare *maximum* supported cubes
 static const unsigned gNumCubes = 3;
 static VideoBuffer cubeVideo[gNumCubes];
 static TiltShakeRecognizer motion[gNumCubes];
 
 static Metadata M = Metadata()
-		.title("FlipIt")
-		.package("com.bmg.sifteo.flipit","1.0")
+		.title("Block Party")
+		.package("com.rjd.sifteo.blockparty","1.1")
 		.icon(Icon)
 		.cubeRange(gNumCubes);
 
 static AssetSlot MainSlot = AssetSlot::allocate().bootstrap(BootstrapAssets);
+static AssetSlot HotCubeSlot = AssetSlot::allocate().bootstrap(HotCubeAssets);
 
 static void playSfx(const AssetAudio& sfx) {
     static int i=0;
@@ -34,6 +39,7 @@ BaseGame* CurrentGame;
 static FlipItGame flipItGame;
 static ShakeGame shakeGame;
 static ColorMeGame colorMeGame;
+static HotCubeGame hotCubeGame;
 
 static void InitCubes()
 {
@@ -52,6 +58,7 @@ public:
 	void init()
 	{
 		Events::cubeAccelChange.set(&EventHandler::onAccelChange, this);
+		Events::neighborAdd.set(&EventHandler::onNeighborAdd, this);
 		Events::cubeTouch.set(&EventHandler::onTouch, this);
 	}
 
@@ -60,6 +67,14 @@ public:
 		if (CurrentGame->IsStarted)
 		{
 			CurrentGame->onAccelChange(id);
+		}
+	}
+
+	void onNeighborAdd(unsigned firstID, unsigned firstSide, unsigned secondID, unsigned secondSide)
+	{
+		if (CurrentGame->IsStarted)
+		{
+			CurrentGame->onNeighborAdd(firstID, firstSide, secondID, secondSide);
 		}
 	}
 
@@ -102,7 +117,7 @@ void main()
         {
             case StateInit:
 				CurrentGame->init(gNumCubes, cubeVideo);
-				CurrentGame->setTiltShakeRecognizer(motion, gNumCubes);				
+				CurrentGame->setTiltShakeRecognizer(motion, gNumCubes);
 				Delay = 3;
 				playSfx (CountSound);
 				LOG ("Init\n");
@@ -142,7 +157,10 @@ void main()
 					state = StateInit;
 					LOG ("Results Done\n");
 					
-					int rand = randomGen.randint(0, 2);
+					if (CurrentGame != NULL)
+						CurrentGame->cleanUp();
+
+					int rand = randomGen.randint(0, 3);
 					switch (rand)
 					{
 					    case 0:
@@ -158,6 +176,11 @@ void main()
 						case 2:
 							LOG ("Playing Shake\n");
 							CurrentGame = &shakeGame;
+							break;
+
+						case 3:
+							LOG ("Playing Hot Cube\n");
+							CurrentGame = &hotCubeGame;
 							break;
 
 					} 

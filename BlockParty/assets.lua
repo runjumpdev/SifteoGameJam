@@ -34,3 +34,24 @@ Colors = {
 	image {"assets/pick_color_5.png", pinned=true}	
 }
 ColorMeStart = image {"assets/pick_color_start.png", pinned=true}
+
+HotCubeAssets = group {quality=9.0}
+
+HotCubeDisc = {
+	image {"assets/hc_disc_top.png", pinned=true},
+	image {"assets/hc_disc_left.png", pinned=true},
+	image {"assets/hc_disc_bottom.png", pinned=true},
+	image {"assets/hc_disc_right.png", pinned=true}	
+}
+
+HotCubeConn = {
+	image {"assets/hc_conn_top.png", pinned=true},
+	image {"assets/hc_conn_left.png", pinned=true},
+	image {"assets/hc_conn_bottom.png", pinned=true},
+	image {"assets/hc_conn_right.png", pinned=true}	
+}
+
+HotCubeStart = image {"assets/hc_start.png", pinned=true}
+BlackFont = image{"assets/blackfont-8x16.png", pinned=true, width=8, height=16}
+
+White = image {"assets/white.png", pinned=true}

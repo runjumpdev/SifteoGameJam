@@ -13,9 +13,13 @@ public:
 	virtual void setTiltShakeRecognizer (TiltShakeRecognizer* motion);
     virtual void start();
 	virtual void stop();
+	virtual void cleanUp();
     virtual void update(TimeDelta timeStep);
+
     virtual void onTouch();
 	virtual void onAccelChange();
+	virtual void onNeighborAdd(unsigned firstID, unsigned firstSide, unsigned secondID, unsigned secondSide);
+
 	virtual void SetPlace (int newPlace);
 	
 	bool IsStarted = false;

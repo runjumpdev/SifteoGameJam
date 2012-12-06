@@ -11,10 +11,13 @@ public:
     virtual void init(unsigned CubeCount, VideoBuffer buffers[]);
     virtual void start();
 	virtual void stop();
+	virtual void cleanUp();
     virtual bool update(TimeDelta timeStep);
 	virtual void setTiltShakeRecognizer(TiltShakeRecognizer motions[], int count);
+
     virtual void onTouch(unsigned id);
 	virtual void onAccelChange(unsigned id);
+	virtual void onNeighborAdd(unsigned firstID, unsigned firstSide, unsigned secondID, unsigned secondSide);
 
 	bool IsStarted = false;	
 

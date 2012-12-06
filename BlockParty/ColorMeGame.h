@@ -27,7 +27,6 @@ public:
 
 	void onTouch (unsigned id);
 
-	void setVideoBuffer (VideoBuffer buffers[], int count);
 private:
 
 	ColorMeCube colorMeCube[10];

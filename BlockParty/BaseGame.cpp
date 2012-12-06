@@ -31,6 +31,14 @@ void BaseGame::stop()
 	IsStarted = false;
 }
 
+void BaseGame::cleanUp()
+{
+	for (unsigned i=0; i < CubeCount; i++)
+	{
+		cubes[i]->cleanUp();
+	}
+}
+
 bool BaseGame::update(TimeDelta timeStep)
 {
 	for (unsigned i = 0; i < CubeCount; i++)
@@ -58,4 +66,11 @@ void BaseGame::onAccelChange(unsigned id)
 {
 	cubes[id]->onAccelChange();
 }
+
+void BaseGame::onNeighborAdd(unsigned firstID, unsigned firstSide, unsigned secondID, unsigned secondSide)
+{
+	cubes[firstID]->onNeighborAdd(firstID, firstSide, secondID, secondSide);
+	cubes[secondID]->onNeighborAdd(firstID, firstSide, secondID, secondSide);
+}
+
 

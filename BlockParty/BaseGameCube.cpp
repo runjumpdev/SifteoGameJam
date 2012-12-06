@@ -26,6 +26,11 @@ void BaseGameCube::stop()
 	IsStarted = false;
 }
 
+void BaseGameCube::cleanUp()
+{
+
+}
+
 void BaseGameCube::update(TimeDelta timeStep)
 {
 }
@@ -37,6 +42,12 @@ void BaseGameCube::onTouch()
 void BaseGameCube::onAccelChange()
 {
 }
+
+void BaseGameCube::onNeighborAdd(unsigned firstID, unsigned firstSide, unsigned secondID, unsigned secondSide)
+{
+
+}
+
 
 void BaseGameCube::SetPlace (int newPlace)
 {
