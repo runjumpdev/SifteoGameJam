@@ -1,7 +1,34 @@
+Implemented
+----------------------------
+
 Flip It:
   - Draw a picture that gives a gesture
   - Flip - On Edge
   - Winner does correct move fastest
+  
+G me:
+  - Most shaking force in 5 seconds
+  - Least shaking force in 5 seconds
+  
+Color Lotto:
+  - Select a Color, Winner is randomly determined
+
+Block Bust:
+  - Touch cube on top of stacked cube as quickly as possible
+  - Winner is most touches
+  - (i.e. Mario coin collect)
+  
+Hot Potato:
+  - Tells you who to touch in X seconds
+  - Ends when time runs out or wrong person touched
+  
+
+
+To Be Implemented
+----------------------------
+
+
+
 
 Spin the Cube:
   - Spin cube, possible to count spins?  (or duration of spin)
@@ -12,9 +39,6 @@ Ball and Cup:
   - P2 attempts to find ball
   - (Advanced:  touch two cubes together to "pass" ball)
 
-G me:
-  - Most shaking force in 5 seconds
-  - Least shaking force in 5 seconds
 
 Balance Cube:
   - Balance Cube on Head
@@ -23,14 +47,6 @@ Balance Cube:
 Visual Puzzle:
   - Attempt to solve picture puzzle
   - Variation:  P1 rearranges, P2 reassembles
-
-Color Lotto:
-  - Select a Color, Winner is randomly determined
-
-Block Bust:
-  - Touch cube on top of stacked cube as quickly as possible
-  - Winner is most touches
-  - (i.e. Mario coin collect)
 
 Rolling Marble:
   - Move marble to either:
@@ -43,9 +59,6 @@ Dodgem:
 Hurtles:
   - Tap or Touch to jump, or via cube touch
 
-Hot Potato:
-  - Tells you who to touch in X seconds
-  - Ends when time runs out or wrong person touched
 
 Tone Deaf:
   - Match the tones by moving the cube
