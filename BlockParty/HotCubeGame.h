@@ -31,13 +31,13 @@ public:
 	void start();
 	bool update (TimeDelta timeStep);
 
-	void newIteration();
 
 	void onNeighborAdd(unsigned firstID, unsigned firstSide, unsigned secondID, unsigned secondSide);
 
 private:
 
-	void lightDisconnectedSides();
+	void clearAll();
+	void newIteration();
 
 	HotCubeCube hotCubes[CUBE_ALLOCATION];
 	HotCubeCube* activeCube;

@@ -29,40 +29,35 @@ void HotCubeGame::start()
 
 	iteration = -1;
 
+	clearAll();
+
 	newIteration();
-
-	lightDisconnectedSides();
-
 }
 
-void HotCubeGame::lightDisconnectedSides()
+void HotCubeGame::clearAll()
 {
 	for (int i=0; i < CubeCount; i++)
 	{
-		if (i == cube1)
-		{
-			hotCubes[cube1].lightDisconnected (side1);
-		}
-		else if (i == cube2)
-		{
-			hotCubes[cube2].lightDisconnected (side2);
-		}
-		else
-		{
-			hotCubes[i].clear();
-		}
+		hotCubes[i].clear();
 	}
 }
 
+/**
+ * Time loop for game
+ */
 bool HotCubeGame::update(TimeDelta timeStep)
 {
 	bool retval = false;
 
+	// After a match there should be a delay before the next round
+	// starts.
 	if (matched && matchedTimeLeft > 0)
 	{
 		matchedTimeLeft-= timeStep.seconds();
 //		LOG ("Decreased matched time left to %f\n", matchedTimeLeft);
 	}
+	// This occurs once the delay timer has wound to zero and the next
+	// round should start.
 	else if (matched)
 	{
 		matched = false;
@@ -70,11 +65,13 @@ bool HotCubeGame::update(TimeDelta timeStep)
 		LOG ("Matched Time ended\n");
 
 		LOG ("Lighting disconnected sides\n");
-		lightDisconnectedSides();
+		clearAll();
+		newIteration();
 	}
 	else
 	{
-
+		// This section is when a round is ongoing, there is no match, and the timer
+		// has not wound down to 0.
 		timeLeft -= timeStep.seconds();
 
 		for (int i=0; i < CubeCount; i++)
@@ -114,6 +111,17 @@ void HotCubeGame::newIteration()
 
 	LOG ("\tcube1(%d, %d) cube2 (%d, %d)\n", cube1, side1, cube2, side2);
 
+	Matchup matchup;
+	matchup.cubeId = cube2;
+	matchup.side = side2;
+
+	hotCubes[cube1].setMatchup(matchup, side1);
+
+	matchup.cubeId = cube1;
+	matchup.side = side1;
+
+	hotCubes[cube2].setMatchup (matchup, side2);
+
 	iteration++;
 	timeLeft = START_TIME - (float)(0.5*(float)iteration);
 }
@@ -122,19 +130,15 @@ void HotCubeGame::onNeighborAdd(unsigned firstID, unsigned firstSide, unsigned s
 {
 	LOG ("On NeighborAdd (%d, %d, %d, %d)\n", firstID, firstSide, secondID, secondSide);
 
+	BaseGame::onNeighborAdd(firstID, firstSide, secondID, secondSide);
+
+	bool cube1Matched = hotCubes[firstID].isMatched(firstSide);
+	bool cube2Matched = hotCubes[secondID].isMatched(secondSide);
+
 	// First could be second and vice versa
-	if ((firstID == cube1 && firstSide == side1 &&
-		secondID == cube2 && secondSide == side2) ||
-		(firstID == cube2 && firstSide == side2 &&
-		 secondID == cube1 && secondSide == side1))
+	if (cube1Matched && cube2Matched)
 	{
 		LOG ("\tEverything Matched\n");
-		LOG ("\tLighting Cube1 Side1 (%d,%d)\n", cube2, side1);
-		LOG ("\tLighting Cube2 Side2 (%d,%d)\n", cube2, side2);
-		hotCubes[firstID].lightConnected (firstSide);
-		hotCubes[secondID].lightConnected (secondSide);
-
-		newIteration();
 
 		matched = true;
 	}

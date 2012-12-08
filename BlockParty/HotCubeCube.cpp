@@ -12,7 +12,6 @@ HotCubeCube::HotCubeCube() {}
 
 void HotCubeCube::init(CubeID initCube)
 {
-	LOG ("HotCubeCube::init()\n");
 	BaseGameCube::init(initCube);
 
 	buffer->bg0.image(vec(0,0), HotCubeStart);
@@ -22,7 +21,6 @@ void HotCubeCube::init(CubeID initCube)
 
 void HotCubeCube::start()
 {
-	LOG ("HotCubeCube::start()\n");
 	BaseGameCube::start();
 
 	Float2 panning;
@@ -34,10 +32,66 @@ void HotCubeCube::start()
 
 void HotCubeCube::stop()
 {
-	LOG ("HotCubeCube::stop\n");
-
 	BaseGameCube::stop();
 }
+
+void HotCubeCube::setMatchup (Matchup matchup, unsigned int side)
+{
+	matchups[side].cubeId = matchup.cubeId;
+	matchups[side].side = matchup.side;
+	matchups[side].isMatched = false;
+
+	lightDisconnected (side);
+}
+
+bool HotCubeCube::isMatched (unsigned int side)
+{
+	return matchups[side].isMatched;
+}
+
+/**
+ * Check for a match of the neighbor to what is being watched for
+ */
+void HotCubeCube::onNeighborAdd(unsigned firstID, unsigned firstSide, unsigned secondID, unsigned secondSide)
+{
+	bool matchFound = false;
+
+	Matchup* toCheck;
+
+	if (cube == firstID)
+	{
+		toCheck = &matchups[firstSide];
+		toCheck->isMatched = checkMatchup (toCheck, secondID, secondSide);
+
+		if (toCheck->isMatched)
+		{
+			lightConnected (firstSide);
+		}
+	}
+	else if (cube == secondID)
+	{
+		toCheck = &matchups[secondSide];
+
+		toCheck->isMatched = checkMatchup (toCheck, firstID, firstSide);
+
+		if (toCheck->isMatched)
+		{
+			lightConnected (secondSide);
+		}
+	}
+}
+
+bool HotCubeCube::checkMatchup (Matchup* matchup, unsigned ID, unsigned side)
+{
+	bool matchFound = false;
+	if (matchup->cubeId == ID && matchup->side == side)
+	{
+		matchFound = true;
+	}
+
+	return matchFound;
+}
+
 
 void HotCubeCube::cleanUp()
 {
@@ -49,7 +103,6 @@ void HotCubeCube::cleanUp()
 void HotCubeCube::lightDisconnected (unsigned int side)
 {
 	// Image is now drawing red bar at "top"
-
 	buffer->bg0.image(vec(0,0), HotCubeDisc[side]);
 
 }
@@ -62,23 +115,6 @@ void HotCubeCube::clear()
 void HotCubeCube::lightConnected (unsigned int side)
 {
 	buffer->bg0.image(vec(0,0), HotCubeConn[side]);
-}
-
-void HotCubeCube::setImageRotation(unsigned int side)
-{
-	switch (side)
-		{
-		case BOTTOM:
-			// flip 180
-			buffer->setRotation(ROT_180);
-			break;
-		case LEFT:
-			buffer->setRotation(ROT_LEFT_90);
-			break;
-		case RIGHT:
-			buffer->setRotation(ROT_RIGHT_90);
-			break;
-		}
 }
 
 void HotCubeCube::paintCountdown (float timeLeft)
@@ -97,8 +133,6 @@ void HotCubeCube::writeText (const char* str)
 
 void HotCubeCube::gameFinished (int totalIterations)
 {
-
-	LOG ("HotCubeCube::gameFinished %d\n", totalIterations);
 	clear();
 
 	String<16> time;
