@@ -9,21 +9,22 @@
 #include "ColorMeCube.h"
 #include "ColorMeGame.h"
 #include "HotCubeGame.h"
+#include "HotCubeMP/HotCubeMPGame.h"
 
 using namespace Sifteo;
 
 // TODO: Change this to a runtime number?
 //  Sensors shows CubeSet::connected() event to determine connected cubes
 //  and use const to declare *maximum* supported cubes
-static const unsigned gNumCubes = 3;
-static VideoBuffer cubeVideo[gNumCubes];
-static TiltShakeRecognizer motion[gNumCubes];
+static unsigned gNumCubes = 3;
+static VideoBuffer cubeVideo[CUBE_ALLOCATION];
+static TiltShakeRecognizer motion[CUBE_ALLOCATION];
 
 static Metadata M = Metadata()
 		.title("Block Party")
 		.package("com.rjd.sifteo.blockparty","1.1")
 		.icon(Icon)
-		.cubeRange(gNumCubes);
+		.cubeRange(1, CUBE_ALLOCATION);
 
 static AssetSlot MainSlot = AssetSlot::allocate().bootstrap(BootstrapAssets);
 static AssetSlot HotCubeSlot = AssetSlot::allocate().bootstrap(HotCubeAssets);
@@ -40,15 +41,24 @@ static FlipItGame flipItGame;
 static ShakeGame shakeGame;
 static ColorMeGame colorMeGame;
 static HotCubeGame hotCubeGame;
+static HotCubeMPGame hotCubeMPGame;
 
 static void InitCubes()
 {
-    for (unsigned i = 0; i < arraysize(cubeVideo); i++)
-    {
+	LOG ("InitCubes\n");
+	int i=0;
+	for (CubeID cube : CubeSet::connected())
+	{
 		cubeVideo[i].initMode(BG0_SPR_BG1);
 		cubeVideo[i].attach(i);
 		motion[i].attach(i);
-    }
+
+		i++;
+	}
+
+	LOG ("\tCubes Found: %d\n", gNumCubes);
+
+	gNumCubes = i;
 }
 
 //Event listener
@@ -60,6 +70,18 @@ public:
 		Events::cubeAccelChange.set(&EventHandler::onAccelChange, this);
 		Events::neighborAdd.set(&EventHandler::onNeighborAdd, this);
 		Events::cubeTouch.set(&EventHandler::onTouch, this);
+		Events::cubeConnect.set(&EventHandler::onConnect, this);
+	}
+
+	void onConnect (unsigned id)
+	{
+		LOG ("onConnect (%d)\n", id);
+		CubeID cube (id);
+		cubeVideo[id].initMode(BG0_SPR_BG1);
+		cubeVideo[id].attach(id);
+		motion[id].attach (id);
+
+		gNumCubes++;
 	}
 
 	void onAccelChange(unsigned id)
@@ -160,7 +182,7 @@ void main()
 					if (CurrentGame != NULL)
 						CurrentGame->cleanUp();
 
-					int rand = randomGen.randint(0, 3);
+					int rand = randomGen.randint(0, 4);
 					switch (rand)
 					{
 					    case 0:
@@ -181,6 +203,11 @@ void main()
 						case 3:
 							LOG ("Playing Hot Cube\n");
 							CurrentGame = &hotCubeGame;
+							break;
+
+						case 4:
+							LOG ("Playing Hot Cube MP\n");
+							CurrentGame = &hotCubeMPGame;
 							break;
 
 					} 

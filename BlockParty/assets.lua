@@ -37,21 +37,40 @@ ColorMeStart = image {"assets/pick_color_start.png", pinned=true}
 
 HotCubeAssets = group {quality=9.0}
 
-HotCubeDisc = {
-	image {"assets/hc_disc_top.png", pinned=true},
-	image {"assets/hc_disc_left.png", pinned=true},
-	image {"assets/hc_disc_bottom.png", pinned=true},
-	image {"assets/hc_disc_right.png", pinned=true}	
+HotCubeDiscVert = {
+	image{"assets/hc_edge_vert_b_80x16.png"},
+	image{"assets/hc_edge_vert_p_80x16.png"},
+	image{"assets/hc_edge_vert_r_80x16.png"},
+	image{"assets/hc_edge_vert_y_80x16.png"}
+}
+
+HotCubeGreen = {
+	image{"assets/hc_edge_horiz_g_80x16.png"},
+	image{"assets/hc_edge_vert_g_80x16.png"}
+}
+
+HotCubeDiscHoriz = {
+	image{"assets/hc_edge_horiz_b_80x16.png"},
+	image{"assets/hc_edge_horiz_p_80x16.png"},
+	image{"assets/hc_edge_horiz_r_80x16.png"},
+	image{"assets/hc_edge_horiz_y_80x16.png"}
 }
 
 HotCubeConn = {
-	image {"assets/hc_conn_top.png", pinned=true},
-	image {"assets/hc_conn_left.png", pinned=true},
-	image {"assets/hc_conn_bottom.png", pinned=true},
-	image {"assets/hc_conn_right.png", pinned=true}	
+	image {"assets/hc_conn_top.png"},
+	image {"assets/hc_conn_left.png"},
+	image {"assets/hc_conn_bottom.png"},
+	image {"assets/hc_conn_right.png"}	
 }
 
-HotCubeStart = image {"assets/hc_start.png", pinned=true}
+HotCubeStamps = {
+	image {"assets/hc_square.png", pinned=true},
+	image {"assets/hc_star.png", pinned=true},
+	image {"assets/hc_star2.png", pinned=true},
+	image {"assets/hc_diamond.png", pinned=true}
+}
+
+HotCubeStart = image {"assets/hc_start.png"}
 BlackFont = image{"assets/blackfont-8x16.png", pinned=true, width=8, height=16}
 
-White = image {"assets/white.png", pinned=true}
+White = image {"assets/white.png"}

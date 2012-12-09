@@ -100,6 +100,8 @@ void HotCubeGame::newIteration()
 	cube1 = randomizer.randint(0, (int)(CubeCount-1));
 	cube2 = randomizer.randint(0, (int)(CubeCount-1));
 
+	unsigned int color = randomizer.randint(0,3);
+
 	while (cube1 == cube2)
 	{
 		// Make sure it's not the same cube!
@@ -109,9 +111,11 @@ void HotCubeGame::newIteration()
 	side1 = randomizer.randint(0,3);
 	side2 = randomizer.randint(0,3);
 
-	LOG ("\tcube1(%d, %d) cube2 (%d, %d)\n", cube1, side1, cube2, side2);
+	LOG ("\tcube1(%d, %d) cube2 (%d, %d), color (%d)\n", cube1, side1, cube2, side2, color);
 
 	Matchup matchup;
+	matchup.color = color;
+
 	matchup.cubeId = cube2;
 	matchup.side = side2;
 
