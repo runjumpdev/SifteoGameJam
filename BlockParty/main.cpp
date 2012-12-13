@@ -23,7 +23,7 @@ static TiltShakeRecognizer motion[CUBE_ALLOCATION];
 
 static Metadata M = Metadata()
 		.title("Block Party")
-		.package("com.rjd.sifteo.blockparty","1.1")
+		.package("com.rjd.sifteo.blockparty","1.2")
 		.icon(Icon)
 		.cubeRange(1, CUBE_ALLOCATION);
 
