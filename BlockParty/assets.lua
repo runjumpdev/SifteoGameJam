@@ -67,3 +67,12 @@ HotCubeStart = image {"assets/hc_start.png"}
 BlackFont = image{"assets/blackfont-8x16.png", pinned=true, width=8, height=16}
 
 White = image {"assets/white.png"}
+
+TCMAssets = group {quality=9.0}
+
+TCMBall = image{"assets/tcm_ball.png"}
+
+TCMStart = image{"assets/tcm_title.png"}
+
+TCMPlay = tracker{"assets/tcm_play.xm"}
+

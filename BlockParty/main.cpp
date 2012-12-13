@@ -10,6 +10,7 @@
 #include "ColorMeGame.h"
 #include "HotCubeGame.h"
 #include "HotCubeMP/HotCubeMPGame.h"
+#include "TCMonte/TCMGame.h"
 
 using namespace Sifteo;
 
@@ -28,6 +29,7 @@ static Metadata M = Metadata()
 
 static AssetSlot MainSlot = AssetSlot::allocate().bootstrap(BootstrapAssets);
 static AssetSlot HotCubeSlot = AssetSlot::allocate().bootstrap(HotCubeAssets);
+static AssetSlot TCMSlot = AssetSlot::allocate().bootstrap(TCMAssets);
 
 static void playSfx(const AssetAudio& sfx) {
     static int i=0;
@@ -42,6 +44,7 @@ static ShakeGame shakeGame;
 static ColorMeGame colorMeGame;
 static HotCubeGame hotCubeGame;
 static HotCubeMPGame hotCubeMPGame;
+static TCMGame tcmGame;
 
 static void InitCubes()
 {
@@ -182,7 +185,7 @@ void main()
 					if (CurrentGame != NULL)
 						CurrentGame->cleanUp();
 
-					int rand = randomGen.randint(0, 4);
+					int rand = randomGen.randint(0, 5);
 					switch (rand)
 					{
 					    case 0:
@@ -208,6 +211,11 @@ void main()
 						case 4:
 							LOG ("Playing Hot Cube MP\n");
 							CurrentGame = &hotCubeMPGame;
+							break;
+
+						case 5:
+							LOG ("Playing TCM\n");
+							CurrentGame = &tcmGame;
 							break;
 
 					} 
