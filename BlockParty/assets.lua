@@ -56,13 +56,6 @@ HotCubeDiscHoriz = {
 	image{"assets/hc_edge_horiz_y_80x16.png"}
 }
 
-HotCubeConn = {
-	image {"assets/hc_conn_top.png"},
-	image {"assets/hc_conn_left.png"},
-	image {"assets/hc_conn_bottom.png"},
-	image {"assets/hc_conn_right.png"}	
-}
-
 HotCubeStamps = {
 	image {"assets/hc_square.png", pinned=true},
 	image {"assets/hc_star.png", pinned=true},
