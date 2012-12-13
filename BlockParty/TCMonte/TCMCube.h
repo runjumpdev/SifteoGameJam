@@ -22,7 +22,6 @@ public:
 	void displayResult (bool isWinner);
 
 	bool isFlipped();
-	bool isUpright();
 
 };
 

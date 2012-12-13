@@ -6,7 +6,6 @@
  */
 
 #include "TCMCube.h"
-#include <sifteo/math.h>
 
 TCMCube::TCMCube() {
 }
@@ -43,7 +42,7 @@ void TCMCube::displayResult (bool isWinner)
 bool TCMCube::isFlipped()
 {
 	bool retval = false;
-	signed int zState = abs(cube.accel().z + 64);
+	signed int zState = cube.accel().z + 64;
 
 	if (zState < 3)
 	{
@@ -51,19 +50,5 @@ bool TCMCube::isFlipped()
 	}
 
 	return retval;
-}
-
-bool TCMCube::isUpright()
-{
-	bool retval = false;
-	signed int zState = abs(cube.accel().z - 64);
-
-	if (zState < 3)
-	{
-		retval = true;
-	}
-
-	return retval;
-
 }
 

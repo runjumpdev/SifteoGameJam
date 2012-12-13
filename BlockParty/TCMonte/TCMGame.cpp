@@ -100,7 +100,7 @@ void TCMGame::checkEndingFlipState()
 {
 	for (int i=0; i < CUBE_COUNT; i++)
 	{
-		if (tcmCubes[i].isUpright())
+		if (!tcmCubes[i].isFlipped())
 		{
 			LOG ("Reporting that %d is flipped up\n", i);
 			if (i == keyCube)
